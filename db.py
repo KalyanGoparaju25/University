@@ -1,11 +1,12 @@
 import datetime
 import mysql.connector
 
+def _get_connection():
+    return mysql.connector.connect(user='root',password='1234', database='university')
 def display(table_name:str):
     print('this is display mode for table '+ table_name)
-    cnx = mysql.connector.connect(user='root',password='1234', database='university')
+    cnx = _get_connection()
     cursor = cnx.cursor(buffered=True)
-    print("got cursor")
     query = ("SELECT * FROM "+ table_name)
     cursor.execute(query)
     rows = cursor.fetchall()
@@ -16,9 +17,9 @@ def display(table_name:str):
     return rows
 
 def insert(id:int, name:str, department:str, credits:str):
-     cnx = mysql.connector.connect(user='root',password='1234', database='university')
+     cnx = _get_connection()
      cursor = cnx.cursor(buffered=True)
-     print("got cursor")
+    
      query = ("INSERT INTO STUDENT(ID, name, dept_name, tot_cred) VALUES(%s,%s,%s,%s) ")
      val = (id, name, department, credits)
      cursor.execute(query, val)
@@ -29,7 +30,7 @@ def insert(id:int, name:str, department:str, credits:str):
      return cursor.rowcount
 def update(student_name:str, instructor_name:str):
     print('this is update mode')
-    cnx = mysql.connector.connect(user='root',password='1234', database='university')
+    cnx = _get_connection()
     cursor = cnx.cursor(buffered=True)
    
     student_query = ("select ID from STUDENT where name = '"+student_name+"'")
@@ -38,26 +39,45 @@ def update(student_name:str, instructor_name:str):
     student_id=''
     for row in result:
         student_id = row[0]
-        print(student_id)
+        
 
     instructor_query = ("select ID from INSTRUCTOR where name = '"+instructor_name+"'")
     cursor.execute(instructor_query)
     result = cursor.fetchall()
     instructor_id = ''
+    instructors = []
     for row in result:
         instructor_id = row[0]
-        print( instructor_id)
-    query = ("INSERT INTO ADVISOR(s_ID, i_ID) VALUES(%s,%s)  ON DUPLICATE KEY UPDATE s_ID=%s")
-    
-    val = (student_id, instructor_id, student_id)
-    cursor.execute(query, val)
+        instructors.append(instructor_id)
+        
+
+    existing_instructor_query = ("select i_ID from ADVISOR where s_ID = %s")
+    args = [student_id]
+    cursor.execute(existing_instructor_query,args)
+    result = cursor.fetchall()
+    current_instructor_id = ''
+    for row in result:
+        current_instructor_id = row[0]
+        
+
+    if current_instructor_id is None:    
+        query = ("INSERT INTO ADVISOR(s_ID, i_ID) VALUES(%s,%s) ")
+        
+        val = (student_id, instructor_id)
+        cursor.execute(query, val)
+    else:
+        print("updating existing instructor")
+        query = ("UPDATE ADVISOR set i_ID = %s WHERE s_ID=%s")
+        
+        val = (instructor_id, student_id)
+        cursor.execute(query, val)
      
     cnx.commit()
     cursor.close()
     cnx.close()
     return cursor.rowcount
 def get_instructor(student_name: str):
-    cnx = mysql.connector.connect(user='root',password='1234', database='university')
+    cnx = _get_connection()
     cursor = cnx.cursor(buffered=True)
     
     query = ("select name from INSTRUCTOR I INNER JOIN ADVISOR A ON I.ID = A.i_ID where A.s_ID = (select ID from STUDENT where name = '"+student_name+"')")
@@ -70,7 +90,7 @@ def get_instructor(student_name: str):
     return result
 
 def get_instructors():
-    cnx = mysql.connector.connect(user='root',password='1234', database='university')
+    cnx = _get_connection()
     cursor = cnx.cursor(buffered=True)
     
     query = ("select name from INSTRUCTOR ")
@@ -83,7 +103,7 @@ def get_instructors():
     return result
    
 def get_students():
-    cnx = mysql.connector.connect(user='root',password='1234', database='university')
+    cnx = _get_connection()
     cursor = cnx.cursor(buffered=True)
     
     query = ("select name from STUDENT ")
@@ -97,7 +117,7 @@ def get_students():
    
 def get_record(student_name:str):
     
-    cnx = mysql.connector.connect(user='root',password='1234', database='university')
+    cnx = _get_connection()
     cursor = cnx.cursor(buffered=True)
     
     query = ("SELECT * FROM STUDENT WHERE name = '"+ student_name+"'")
@@ -111,7 +131,7 @@ def get_record(student_name:str):
 
 def delete(student_id:str):
     
-    cnx = mysql.connector.connect(user='root',password='1234', database='university')
+    cnx = _get_connection()
     cursor = cnx.cursor(buffered=True)
     
     query = ("delete FROM STUDENT WHERE name = '"+student_id+"'")

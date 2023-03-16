@@ -1,4 +1,5 @@
 import db
+from pprint import pprint
 
 
 def interatc():
@@ -34,17 +35,21 @@ def interatc():
                 print("instructor for the student is : "+ row[0])
 
         result = db.get_instructors()
+        instructors = []
         print("all available instructors")
         for row in result:
-            print("\n ", row[0])
-
+            instructors.append(row[0])
+            #print("\n ", row[0])
+        pprint(instructors)
         result = db.get_students()
+        students = []
         print("all available students")
         for row in result:
-            print("\n ", row[0])
-
-        instructor_name = input("pick a instructor from above to assosiate a instructor")
-        student_name = input("pick a student from above to assosiate a instructor")
+            students.append(row[0])
+            #print("\n ", row[0])
+        pprint(students)
+        instructor_name = input("pick a instructor from above to assosiate a Student: ")
+        student_name = input("pick a student from above to assosiate a instructor: ")
         db.update(student_name,instructor_name)
     if option == "Delete":
         student_name = input("enter student name: ")
