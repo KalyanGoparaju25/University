@@ -114,6 +114,20 @@ def get_students():
     cursor.close()
     cnx.close()
     return result
+
+def get_advisor(student_name:str):
+    
+    cnx = _get_connection()
+    cursor = cnx.cursor(buffered=True)
+    
+    query = ("select name from INSTRUCTOR I INNER JOIN ADVISOR A ON I.ID = A.i_ID where A.s_ID = (select ID from STUDENT where name = '"+ student_name+"')")
+    
+    cursor.execute(query)
+    result = cursor.fetchall()
+
+    cursor.close()
+    cnx.close()
+    return result
    
 def get_record(student_name:str):
     

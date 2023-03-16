@@ -48,6 +48,9 @@ def interatc():
             students.append(row[0])
             #print("\n ", row[0])
         pprint(students)
+        result = db.get_advisor(student_name)
+        for row in result:
+            print("\n ", "Current advisor for the student is : ", row[0])
         instructor_name = input("pick a instructor from above to assosiate a Student: ")
         student_name = input("pick a student from above to assosiate a instructor: ")
         db.update(student_name,instructor_name)
