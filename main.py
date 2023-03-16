@@ -6,7 +6,7 @@ def interatc():
     option = input('''Pick from following option:
                    1. Display
                    2. Insert
-                   3. Update
+                   3. Modify
                    4. Delete    ''')
     if option == "Display":
         table_name = input("enter table name: ")
@@ -27,7 +27,7 @@ def interatc():
         credits = input("enter no.of tot_creds: ")
         result = db.insert(int(id), name, department, credits)
         print('row inserted at : '+ str(result))
-    if option == "Update":
+    if option == "Modify":
         student_name = input("enter student name: ")
         result = db.get_instructor(student_name)
         if result is not None:
@@ -59,6 +59,8 @@ def interatc():
             if confirm == 'Y':
                 delete = db.delete(student_name)
                 print('student go deleted')
+            else:
+                interatc()
     else:
         print("Exit")
 

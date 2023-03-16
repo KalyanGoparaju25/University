@@ -66,7 +66,7 @@ def update(student_name:str, instructor_name:str):
         val = (student_id, instructor_id)
         cursor.execute(query, val)
     else:
-        print("updating existing instructor")
+        print("Modifying existing instructor")
         query = ("UPDATE ADVISOR set i_ID = %s WHERE s_ID=%s")
         
         val = (instructor_id, student_id)
