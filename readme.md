@@ -1,7 +1,9 @@
-University database crud operations
+**University database crud operations**
 
-How to execute ?
-python main.py
+**How to execute ?**
+
+> python main.py
+
 Options to pick:(Case sensitive)
 1. Update
 2. Insert
@@ -18,7 +20,9 @@ Delete will delete a student record.
 
 
 db.py -- has all the necessary crud operations
+
 main.py -- has the cli utilities for the app
 
-ToDo: 
+**ToDo: **
+
 replace main.py to ui.py which replaces cli to GUI
